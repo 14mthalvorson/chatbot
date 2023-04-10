@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chatbot</title>
+    <style>
+        /* Add your preferred styles here */
+    </style>
+</head>
+
+<body>
+    <h1>Chatbot</h1>
+    <div id="chat">
+        <!-- Chat messages will be appended here -->
+    </div>
+    <input type="text" id="message" placeholder="Type your message"></input>
+    <button onclick=" sendMessage()">Send</button>
+
+    <script>
+        const API_URL = 'https://your-api-gateway-url/prod'; // Replace with your API Gateway Invoke URL
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('message');
+            const message = messageInput.value.trim();
+
+            if (message) {
+                appendMessage('You', message);
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ body: message }),
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                const data = await response.json();
+                appendMessage('Chatbot', data.body);
+
+                messageInput.value = '';
+            }
+        }
+
+        function appendMessage(sender, text) {
+            const chat = document.getElementById('chat');
+            const messageElement = document.createElement('div');
+            messageElement.innerHTML = `<b>${sender}:</b> ${text}`;
+            chat.appendChild(messageElement);
+        }
+    </script>
+</body>
+
+</html>
